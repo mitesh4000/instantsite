@@ -1,7 +1,12 @@
+import axios from "axios";
 import { useFormik } from "formik";
+import { useState } from "react";
 import HTMLPreviewPanal from "~/components/HTMLPreviewPanal";
 
 export function Welcome() {
+  const [genratedWebsite, setGenratedWebsite] = useState("");
+  const [websiteGenrating, setWebsiteGEnrating] = useState(false);
+
   interface FormValues {
     orgName: string;
     orgType: string;
@@ -10,16 +15,34 @@ export function Welcome() {
     phoneNumber: string;
   }
 
+  const getGenratedWebsite = async (data: FormValues) => {
+    setWebsiteGEnrating(true);
+    const response: any = await axios
+      .post("http://localhost:3001/genrate_site_ai", data)
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setWebsiteGEnrating(false);
+      });
+    if (response.data) {
+      setGenratedWebsite(response.data);
+    } else {
+      alert(response);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
-      orgName: "",
-      orgType: "",
-      description: "",
-      email: "",
-      phoneNumber: "",
+      orgName: "donal",
+      orgType: "it services",
+      description:
+        "we are providing web development and designing services from past 3 years and have worked with over 12 compnies",
+      email: "donal@mail.com  ",
+      phoneNumber: "8989897765",
     },
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      getGenratedWebsite(values);
     },
   });
 
@@ -36,6 +59,8 @@ export function Welcome() {
                 {" "}
                 name of organization{" "}
               </label>
+
+              <p className="text-red-500">{formik.errors.orgName}</p>
               <input
                 id="orgName"
                 name="orgName"
@@ -103,7 +128,11 @@ export function Welcome() {
           </div>
         </form>
       </div>
-      <HTMLPreviewPanal></HTMLPreviewPanal>
+      <HTMLPreviewPanal
+        content={genratedWebsite}
+        loading={websiteGenrating}
+        noPreview
+      ></HTMLPreviewPanal>
     </div>
   );
 }
