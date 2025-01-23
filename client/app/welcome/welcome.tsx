@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useFormik } from "formik";
 import { useState } from "react";
 import HTMLPreviewPanal from "~/components/HTMLPreviewPanal";
@@ -17,18 +16,36 @@ export function Welcome() {
 
   const getGenratedWebsite = async (data: FormValues) => {
     setWebsiteGEnrating(true);
-    const response: any = await axios
-      .post("http://localhost:3001/genrate_site_ai", data)
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setWebsiteGEnrating(false);
+
+    try {
+      console.log("called");
+      const response = await fetch("http://localhost:3001/genrate_site_ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
-    if (response.data) {
-      setGenratedWebsite(response.data);
-    } else {
-      alert(response);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+
+      if (responseData) {
+        console.log(responseData);
+        setGenratedWebsite(responseData.data);
+      } else {
+        alert("No data returned from the server.");
+      }
+    } catch (err) {
+      console.error("Error generating website:", err);
+      alert(
+        "An error occurred while generating the website. Please try again."
+      );
+    } finally {
+      setWebsiteGEnrating(false);
     }
   };
 
@@ -131,7 +148,7 @@ export function Welcome() {
       <HTMLPreviewPanal
         content={genratedWebsite}
         loading={websiteGenrating}
-        noPreview
+        noPreview={!genratedWebsite}
       ></HTMLPreviewPanal>
     </div>
   );

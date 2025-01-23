@@ -1,3 +1,4 @@
+import cors from "cors";
 import dotenv from "dotenv";
 import express, { Application } from "express";
 import { createServer } from "http";
@@ -19,6 +20,7 @@ const io = new Server(server);
 const port = process.env.PORT;
 validateEnv();
 connectToDatabase();
+app.use(cors());
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.static(path.resolve("./src/public")));
