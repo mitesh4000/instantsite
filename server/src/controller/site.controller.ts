@@ -2,6 +2,7 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOllama } from "@langchain/ollama";
 import { Request, Response } from "express";
 import { StructuredOutputParser } from "langchain/output_parsers";
+import { OpenAI } from "openai";
 import { z } from "zod";
 
 const genSiteAi = async (req: Request, res: Response) => {
@@ -104,5 +105,21 @@ CRITICAL INSTRUCTIONS:
     return res.status(500).json({ error: errorMessage });
   }
 };
+const openai = new OpenAI({
+  baseURL: "https://api.deepseek.com",
+  apiKey: "sk-0924485f5084485c8b73eec74d19f569",
+});
+const genSiteAiDeepSeek = async (req: Request, res: Response) => {
+  try {
+    const completion = await openai.chat.completions.create({
+      messages: [{ role: "system", content: "give me code for website" }],
+      model: "deepseek-chat",
+    });
 
-export { genSiteAi };
+    console.log(completion.choices[0].message.content);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { genSiteAi, genSiteAiDeepSeek };
