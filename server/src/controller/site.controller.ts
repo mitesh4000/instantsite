@@ -3,7 +3,6 @@ import { ChatOllama } from "@langchain/ollama";
 import { Request, Response } from "express";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { OpenAI } from "openai";
-import { CLOSING } from "ws";
 import { z } from "zod";
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -113,7 +112,6 @@ const openai = new OpenAI({
 });
 const genSiteAiGemini = async (req: Request, res: Response) => {
   try {
-
     const { orgName, orgType, description, email, phoneNumber } = req.body;
     console.log(req.body);
     const inputBodySchems = z.object({
@@ -124,19 +122,27 @@ const genSiteAiGemini = async (req: Request, res: Response) => {
       phoneNumber: z.string().min(10).max(15),
     });
 
-const genAI = new GoogleGenerativeAI("AIzaSyDpTkuvocSdcfcVYg52n7-lli3rRWZsXUM");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const genAI = new GoogleGenerativeAI(
+      "AIzaSyDpTkuvocSdcfcVYg52n7-lli3rRWZsXUM"
+    );
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-const prompt = `
-       CRITICAL INSTRUCTIONS FOR CODE GENERATION:
-
-Based on the description: “${description}”, generate a good looking One-Page Website (or Scrolling Page) in HTML format for a mini website and provide the code with the following information:
+    const prompt = `
+CRITICAL INSTRUCTIONS FOR CODE GENERATION:
+    Based on the description: “${description}”, generate a good looking One-Page Website (or Scrolling Page) in HTML format for a mini website and provide the code with the following information:
     Name of the company: ${orgName}
     Organization type: ${orgType}
     Email: ${email}
     Phone number: ${phoneNumber}
 
 Design Guidelines
+    banner :
+    the main banner which will contain the multiple full size image with little bit of animation and name of the company in center middle.
+    add smple image source link in source code for banner like https://placehold.co/600x400/808080/b1b1b1
+
+    socials section :
+    add socials for diffrent platforms like facebook,twitter,insta,etc. 
+
     Primary Colors:
         Base Gray: #808080 (medium gray)
         Accent Lime: #32CD32 (vibrant lime green)
@@ -148,6 +154,8 @@ Design Guidelines
 
       EXAMPLE OUTPUT: <!DOCTYPE html><html><head><title>Hello World</title></head><body><h1>Hello World!</h1></body></html>
 
+      
+
       CRITICAL: 
 
       - The website must include ‘Contact Us’, ‘About Us’, and ‘Services’ sections.
@@ -157,46 +165,42 @@ Design Guidelines
       - NO additional commentary
       - no aditional space  or "\n"
       \n{format_instructions} 
-        ` 
+        `;
 
-const result = await model.generateContent(prompt);
-console.log(result.response.text());
+    const result = await model.generateContent(prompt);
+    console.log(result.response.text());
 
-res.json({data:result.response.text()})
+    res.json({ data: result.response.text() });
 
+    // fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDpTkuvocSdcfcVYg52n7-lli3rRWZsXUM', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     contents: [{
+    //       parts: [{ text:
+    //         `
+    //        CRITICAL INSTRUCTIONS FOR CODE GENERATION:
+    //       generate a code for One-Page Website in html format displaying hellow world:
+    //       EXAMPLE OUTPUT: <!DOCTYPE html><html><head><title>Hello World</title></head><body><h1>Hello World!</h1></body></html>
 
-    
-// fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDpTkuvocSdcfcVYg52n7-lli3rRWZsXUM', {
-//   method: 'POST',
-//   headers: {
-//     'Content-Type': 'application/json'
-//   },
-//   body: JSON.stringify({
-//     contents: [{
-//       parts: [{ text: 
-//         `
-//        CRITICAL INSTRUCTIONS FOR CODE GENERATION:
-//       generate a code for One-Page Website in html format displaying hellow world:
-//       EXAMPLE OUTPUT: <!DOCTYPE html><html><head><title>Hello World</title></head><body><h1>Hello World!</h1></body></html>
-
-//       CRITICAL: 
-//       - Respond ONLY with VALID HTML code just like given in example 
-//       - NO additional commentary
-//       - no aditional space  or "\n"
-//       \n{format_instructions} 
-//         ` 
-//       }]
-//     }]
-//   })
-// })
-// .then(response => response.json())
-// .then(data => {console.log(data); res.json(data.candidate)})
-// .catch(error => {
-//   console.log(error)
-//   res.json({error:error})
-// });
-
-
+    //       CRITICAL:
+    //       - Respond ONLY with VALID HTML code just like given in example
+    //       - NO additional commentary
+    //       - no aditional space  or "\n"
+    //       \n{format_instructions}
+    //         `
+    //       }]
+    //     }]
+    //   })
+    // })
+    // .then(response => response.json())
+    // .then(data => {console.log(data); res.json(data.candidate)})
+    // .catch(error => {
+    //   console.log(error)
+    //   res.json({error:error})
+    // });
   } catch (error) {
     console.log(error);
   }
