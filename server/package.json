@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc -W",
     "start": "node dist/app.js",
-    "dev": "NODE_ENV=development nodemon --exec ts-node src/app.ts"
+    "dev": "nodemon --exec ts-node src/app.ts"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/mitesh4000/Trust_To_Pay_assignment#readme",
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@langchain/ollama": "^0.1.4",
     "@langchain/openai": "^0.3.14",
     "@types/bcrypt": "^5.0.2",

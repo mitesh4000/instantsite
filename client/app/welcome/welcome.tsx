@@ -19,7 +19,7 @@ export function Welcome() {
 
     try {
       console.log("called");
-      const response = await fetch("http://localhost:3001/genrate_site_ai", {
+      const response = await fetch("http://localhost:3001/genrate_site_ai_gemini", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

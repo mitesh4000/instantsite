@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { genSiteAi, genSiteAiDeepSeek } from "../controller/site.controller";
+import { genSiteAi, genSiteAiGemini } from "../controller/site.controller";
 
 const router = Router();
 router.post("/genrate_site_ai", genSiteAi);
-router.post("/genrate_site_deep_seek", genSiteAiDeepSeek);
+router.post("/genrate_site_ai_gemini", genSiteAiGemini);
 export default router;
