@@ -1,6 +1,8 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import CustomDropdown from "~/components/customDropdown";
+import CustomInput from "~/components/customInput";
+import CustomTextArea from "~/components/customTextArea";
 import HTMLPreviewPanal from "~/components/HTMLPreviewPanal";
 
 export function Welcome() {
@@ -118,87 +120,63 @@ export function Welcome() {
 
   return (
     <div className="w-full h-full flex justify-space-between">
-      <div className=" h-full border border-gray-300 rounded-lg p-5 m-10">
+      <div className=" h-full border bg-white border-gray-300 rounded-lg p-5 m-10 w-1/2">
         <h1 className="text-2xl font-bold text-gray-800 text-center">
           fill the form
         </h1>
         <form onSubmit={formik.handleSubmit} className="flex flex-col">
           <div className="flex flex-row">
-            <div className="flex flex-col m-2">
-              <label htmlFor="orgName" className="text-sm m-1 text-gray-600">
-                {" "}
-                name of organization{" "}
-              </label>
-
-              <p className="text-red-500">{formik.errors.orgName}</p>
-              <input
-                id="orgName"
-                name="orgName"
-                type="text"
-                className="border border-gray-300 rounded-md p-1"
-                onChange={formik.handleChange}
-                value={formik.values.orgName}
-              ></input>
-            </div>
-            <div className="flex flex-col m-2">
-              <CustomDropdown
-                label="select the type of organization"
-                id="orgType"
-                name="orgType"
-                options={businessTypeOptinons}
-                value={formik.values.orgType}
-                onChange={formik.handleChange}
-              ></CustomDropdown>
-            </div>
+            <CustomInput
+              className="w-1/2 m-1"
+              id="orgName"
+              name="orgName"
+              type="text"
+              label="organization name"
+              onChange={formik.handleChange}
+              value={formik.values.orgName}
+            ></CustomInput>
+            <CustomDropdown
+              className="w-1/2 m-1"
+              label="select the type of organization"
+              id="orgType"
+              name="orgType"
+              options={businessTypeOptinons}
+              value={formik.values.orgType}
+              onChange={formik.handleChange}
+            ></CustomDropdown>
           </div>
 
           <div className="flex flex-row">
-            <div className="flex flex-col m-2">
-              <label htmlFor="email" className="text-sm m-1 text-gray-600">
-                {" "}
-                email{" "}
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="text"
-                className="border border-gray-300 rounded-md p-1"
-                onChange={formik.handleChange}
-                value={formik.values.email}
-              ></input>
-            </div>
-
-            <div className="flex flex-col m-2">
-              <label htmlFor="phone" className="text-sm m-1 text-gray-600">
-                {" "}
-                phone{" "}
-              </label>
-
-              <input
-                id="phone"
-                name="phone"
-                type="text"
-                className="border border-gray-300 rounded-md p-1"
-                onChange={formik.handleChange}
-                value={formik.values.phoneNumber}
-              ></input>
-            </div>
-          </div>
-
-          <div className="flex flex-col m-2">
-            <label htmlFor="phone" className="text-sm m-1 text-gray-600">
-              {" "}
-              description{" "}
-            </label>
-            <textarea
-              id="description"
-              rows={4}
-              name="description"
-              className="border border-gray-300 rounded-md p-1"
+            <CustomInput
+              id="email"
+              name="email"
+              type="text"
+              label="email"
+              className="w-1/2 m-1"
               onChange={formik.handleChange}
-              value={formik.values.description}
-            ></textarea>
+              value={formik.values.email}
+            ></CustomInput>
+
+            <CustomInput
+              id="phone"
+              name="phone"
+              type="text"
+              label="phone"
+              className="w-1/2 m-1"
+              onChange={formik.handleChange}
+              value={formik.values.phoneNumber}
+            ></CustomInput>
           </div>
+
+          <CustomTextArea
+            id="description"
+            rows={4}
+            name="description"
+            className="m-1"
+            onChange={formik.handleChange}
+            value={formik.values.description}
+            label="description"
+          ></CustomTextArea>
           <h1 className="text-2xl font-bold text-gray-800 text-center">
             Answer som basic qustions
           </h1>
