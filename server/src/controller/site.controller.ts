@@ -112,7 +112,17 @@ const openai = new OpenAI({
 });
 const genSiteAiGemini = async (req: Request, res: Response) => {
   try {
-    const { orgName, orgType, description, email, phoneNumber } = req.body;
+    const {
+      orgName,
+      orgType,
+      description,
+      email,
+      phoneNumber,
+      businessType,
+      designPreferences,
+      projectPurpose,
+      targetAudience,
+    } = req.body;
     console.log(req.body);
     const inputBodySchems = z.object({
       orgName: z.string().min(3).max(100),
@@ -137,6 +147,11 @@ Company Information:
     Email: ${email}
     Phone number: ${phoneNumber}
 
+requirements gathered from the user:
+    Business Type: ${businessType}
+    Design Preferences: ${designPreferences}
+    Project Purpose: ${projectPurpose}
+    Target Audience: ${targetAudience}
 
 Design Guidelines
     navigation bar :
