@@ -130,18 +130,25 @@ const genSiteAiGemini = async (req: Request, res: Response) => {
     const prompt = `
 CRITICAL INSTRUCTIONS FOR CODE GENERATION:
     Based on the description: “${description}”, generate a good looking One-Page Website (or Scrolling Page) in HTML format for a mini website and provide the code with the following information:
+
+Company Information:
     Name of the company: ${orgName}
     Organization type: ${orgType}
     Email: ${email}
     Phone number: ${phoneNumber}
 
-Design Guidelines
-    banner :
-    the main banner which will contain the multiple full size image with little bit of animation and name of the company in center middle.
-    add smple image source link in source code for banner like https://placehold.co/600x400/808080/b1b1b1
 
-    socials section :
-    add socials for diffrent platforms like facebook,twitter,insta,etc. 
+Design Guidelines
+    navigation bar :
+    Create a navigation bar with links to the main sections of the website.
+
+    banner :
+    Create the main banner to contain multiple full-size images with slideshow and place the company’s name at the center.
+    Use placeholder image sources for the banner, such as https://placehold.co/600x400?text=company\nname.
+
+
+    Socials Section:
+    Include social media icons for platforms like Facebook, Twitter, Instagram, etc
 
     Primary Colors:
         Base Gray: #808080 (medium gray)
