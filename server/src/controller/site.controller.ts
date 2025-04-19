@@ -135,94 +135,100 @@ const genSiteAiGemini = async (req: Request, res: Response) => {
     const genAI = new GoogleGenerativeAI(
       "AIzaSyDpTkuvocSdcfcVYg52n7-lli3rRWZsXUM"
     );
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash-thinking-exp-01-21",
+    });
 
-    const prompt = `
-CRITICAL INSTRUCTIONS FOR CODE GENERATION:
-    Based on the description: “${description}”, generate a good looking One-Page Website (or Scrolling Page) in HTML format for a mini website and provide the code with the following information:
+    const prompt = `CRITICAL INSTRUCTIONS FOR PREMIUM WEBSITE GENERATION:
+Generate an innovative, conversion-optimized one-page website with cutting-edge UI/UX and built-in SEO in valid HTML5 format.
 
-Company Information:
-    Name of the company: ${orgName}
-    Organization type: ${orgType}
-    Email: ${email}
-    Phone number: ${phoneNumber}
+Company Profile:
+- Name: ${orgName}
+- Industry: ${businessType}
+- Contact: ${email} | ${phoneNumber}
+- Unique Value: ${projectPurpose}
 
-requirements gathered from the user:
-    Business Type: ${businessType}
-    Design Preferences: ${designPreferences}
-    Project Purpose: ${projectPurpose}
-    Target Audience: ${targetAudience}
+Creative Direction:
+- Design Style: ${designPreferences} 
+- Audience: ${targetAudience}
+- Emotion: Trustworthy yet innovative
+- Differentiator: Memorable micro-interactions
 
-Design Guidelines
-    navigation bar :
-    Create a navigation bar with links to the main sections of the website.
+Technical Excellence Requirements:
 
-    banner :
-    Create the main banner to contain multiple full-size images with slideshow and place the company’s name at the center.
-    Use placeholder image sources for the banner, such as https://placehold.co/600x400?text=company\nname.
+1. UI/UX INNOVATIONS:
+   - Dynamic glassmorphism design elements
+   - Subtle animations on scroll (GSAP-inspired)
+   - Intelligent white space utilization
+   - Mobile-optimized touch targets
+   - Dark/light mode toggle
+   - 3D hover effects on cards
+   - Custom cursor effects
 
+2. VISUAL HIERARCHY:
+   - Gradient overlays (#808080 to #32CD32)
+   - Modern font pairings (Montserrat + Poppins)
+   - Strategic color psychology implementation
+   - SVG illustrations for scalability
+   - Parallax scrolling sections
 
-    Socials Section:
-    Include social media icons for platforms like Facebook, Twitter, Instagram, etc
+3. SEO OPTIMIZATION:
+   - Semantic HTML5 structure
+   - JSON-LD schema markup
+   - Optimized meta tags
+   - Semantic URL fragments
+   - Lazy-loaded images
+   - ALT text for all visuals
+   - Open Graph meta tags
 
-    Primary Colors:
-        Base Gray: #808080 (medium gray)
-        Accent Lime: #32CD32 (vibrant lime green)
-    Color Distribution:
-        Background: Light gray (#F0F0F0)
-        Text: Charcoal gray (#333333)
-        Navbar: Medium gray (#808080)
-        Hover Elements: Bright lime (#32CD32)
+4. SECTIONS ARCHITECTURE:
+   [Hero]
+   - Fullscreen video/particle background
+   - Animated CTA button
+   - Scroll indicator
 
-      EXAMPLE OUTPUT: <!DOCTYPE html><html><head><title>Hello World</title></head><body><h1>Hello World!</h1></body></html>
+   [About]
+   - Interactive timeline
+   - Team member holographic cards
+   - Stats counter animation
 
-      
+   [Services]
+   - 3D rotating service cards
+   - Comparison tables
+   - Testimonial carousel
 
-      CRITICAL: 
+   [Contact]
+   - Smart form with validation
+   - Interactive map
+   - Social media integration
 
-      - The website must include ‘Contact Us’, ‘About Us’, and ‘Services’ sections.
-      - The website must be responsive.
-      - The website must be SEO-friendly.
-      - Respond ONLY with VALID HTML code just like given in example 
-      - NO additional commentary
-      - no aditional space  or "\n"
-      \n{format_instructions} 
-        `;
+5. PERFORMANCE:
+   - Critical CSS inlined
+   - WebP image format
+   - Minimal external requests
+   - Async loading
+   - Cache optimization hints
+
+6. ACCESSIBILITY:
+   - WCAG AA compliant
+   - Keyboard navigation
+   - Reduced motion option
+   - Proper contrast ratios
+   - Screen reader optimized
+
+Output Format: <!DOCTYPE html><html lang="en">...</html>
+
+CRITICAL: 
+- Zero external dependencies except Font Awesome
+- Pure CSS animations only
+- Valid W3C markup
+- No placeholder text
+- Only output raw HTML code `;
 
     const result = await model.generateContent(prompt);
-    console.log(result.response.text());
+    // console.log(result.response.text());
 
     res.json({ data: result.response.text() });
-
-    // fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDpTkuvocSdcfcVYg52n7-lli3rRWZsXUM', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({
-    //     contents: [{
-    //       parts: [{ text:
-    //         `
-    //        CRITICAL INSTRUCTIONS FOR CODE GENERATION:
-    //       generate a code for One-Page Website in html format displaying hellow world:
-    //       EXAMPLE OUTPUT: <!DOCTYPE html><html><head><title>Hello World</title></head><body><h1>Hello World!</h1></body></html>
-
-    //       CRITICAL:
-    //       - Respond ONLY with VALID HTML code just like given in example
-    //       - NO additional commentary
-    //       - no aditional space  or "\n"
-    //       \n{format_instructions}
-    //         `
-    //       }]
-    //     }]
-    //   })
-    // })
-    // .then(response => response.json())
-    // .then(data => {console.log(data); res.json(data.candidate)})
-    // .catch(error => {
-    //   console.log(error)
-    //   res.json({error:error})
-    // });
   } catch (error) {
     console.log(error);
   }
