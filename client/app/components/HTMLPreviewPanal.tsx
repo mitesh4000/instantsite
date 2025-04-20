@@ -12,7 +12,7 @@ const HTMLPreviewPanel: React.FC<HTMLPreviewPanelProps> = ({
   noPreview,
 }) => {
   return (
-    <div className="w-full h-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+    <div className="w-full h-full bg-white border border-gray-200 rounded-lg m-10 shadow-sm overflow-hidden">
       <h2 className="p-4 text-lg font-semibold text-emerald-600 border-b border-gray-200">
         HTML Preview
       </h2>
