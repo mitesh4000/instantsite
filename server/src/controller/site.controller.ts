@@ -2,8 +2,11 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOllama } from "@langchain/ollama";
 import { Request, Response } from "express";
 import { StructuredOutputParser } from "langchain/output_parsers";
+import _ from "lodash";
+import mongoose from "mongoose";
 import { OpenAI } from "openai";
 import { z } from "zod";
+import { Gen } from "../model/gen.model";
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genSiteAi = async (req: Request, res: Response) => {
@@ -208,6 +211,7 @@ Technical Excellence Requirements:
    - Minimal external requests
    - Async loading
    - Cache optimization hints
+   - Make html minify 
 
 6. ACCESSIBILITY:
    - WCAG AA compliant
@@ -226,12 +230,37 @@ CRITICAL:
 - Only output raw HTML code `;
 
     const result = await model.generateContent(prompt);
-    // console.log(result.response.text());
+    const outputHtml = _.replace(
+      _.replace(result.response.text(), "```html", ""),
+      "```",
+      ""
+    );
 
-    res.json({ data: result.response.text() });
+    const record = new Gen();
+
+    record.html = outputHtml;
+    await record.save();
+
+    res.json({
+      data: outputHtml,
+      _id: record._id,
+    });
   } catch (error) {
     console.log(error);
   }
 };
 
-export { genSiteAi, genSiteAiGemini };
+const htmlSites = async (req: Request, res: Response) => {
+  try {
+    const _id = new mongoose.Types.ObjectId(req.params.id);
+
+    if (!_id) {
+      res.send("");
+    } else {
+      const record = await Gen.findOne({ _id });
+      res.send(record?.html || "");
+    }
+  } catch (err) {}
+};
+
+export { genSiteAi, genSiteAiGemini, htmlSites };
