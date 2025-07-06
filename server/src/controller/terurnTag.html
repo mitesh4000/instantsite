@@ -1,0 +1,154 @@
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Create inspector UI elements
+    const overlay = document.createElement("div");
+    overlay.className = "inspector-overlay";
+    document.body.appendChild(overlay);
+
+    const tooltip = document.createElement("div");
+    tooltip.className = "inspector-tooltip";
+    document.body.appendChild(tooltip);
+
+    // Create toggle button
+    const toggleBtn = document.createElement("button");
+    toggleBtn.className = "inspector-toggle-btn";
+    toggleBtn.textContent = "Enable Inspector";
+    document.body.appendChild(toggleBtn);
+
+    let isInspecting = false;
+    let currentElement = null;
+    let isMouseMoving = false;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Track mouse position
+    document.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      isMouseMoving = true;
+    });
+
+    // Toggle inspector mode
+    function toggleInspector(enable = !isInspecting) {
+      isInspecting = enable;
+
+      if (isInspecting) {
+        document.body.classList.add("inspector-active");
+        overlay.style.display = "block";
+        toggleBtn.textContent = "Disable Inspector";
+        toggleBtn.classList.add("active");
+        updateOverlay(); // Initial position
+      } else {
+        document.body.classList.remove("inspector-active");
+        overlay.style.display = "none";
+        tooltip.style.display = "none";
+        toggleBtn.textContent = "Enable Inspector";
+        toggleBtn.classList.remove("active");
+        currentElement = null;
+      }
+    }
+
+    // Toggle when button is clicked
+    toggleBtn.addEventListener("click", () => {
+      toggleInspector();
+    });
+
+    // Update overlay position continuously
+    function updateOverlay() {
+      if (!isInspecting) return;
+
+      const element = document.elementFromPoint(mouseX, mouseY);
+      if (
+        !element ||
+        element === overlay ||
+        element === tooltip ||
+        element === toggleBtn
+      ) {
+        tooltip.style.display = "none";
+        overlay.style.display = "none";
+        requestAnimationFrame(updateOverlay);
+        return;
+      }
+
+      currentElement = element;
+      overlay.style.display = "block";
+
+      // Position the highlight overlay
+      const rect = element.getBoundingClientRect();
+      overlay.style.left = `${rect.left + window.scrollX}px`;
+      overlay.style.top = `${rect.top + window.scrollY}px`;
+      overlay.style.width = `${rect.width}px`;
+      overlay.style.height = `${rect.height}px`;
+
+      // Update tooltip with element info
+      updateTooltip(element, mouseX, mouseY);
+
+      requestAnimationFrame(updateOverlay);
+    }
+
+    function updateTooltip(element, x, y) {
+      const tagName = element.tagName.toLowerCase();
+      const id = element.id ? `#${element.id}` : "";
+      const classes = element.className
+        ? `.${element.className.split(" ").join(".")}`
+        : "";
+      const textContent = element.textContent.trim();
+
+      tooltip.innerHTML = `
+                <h4>${tagName}${id}${classes}</h4>
+                <div class="inspector-html">
+                    <pre>${escapeHtml(element.outerHTML.substring(0, 200))}${
+        element.outerHTML.length > 200 ? "..." : ""
+      }</pre>
+                </div>
+                <div class="inspector-edit-form">
+                    <textarea id="inspector-edit-text">${escapeHtml(
+                      textContent
+                    )}</textarea>
+                    <button id="inspector-submit-btn">Update Text</button>
+                </div>
+            `;
+
+      // Position tooltip (avoid going off-screen)
+      const tooltipWidth = 300; // Fixed width to match max-width
+      const tooltipHeight = tooltip.offsetHeight;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
+      let left = x + 20;
+      let top = y + 20;
+
+      if (left + tooltipWidth > windowWidth) {
+        left = x - tooltipWidth - 20;
+      }
+
+      if (top + tooltipHeight > windowHeight) {
+        top = y - tooltipHeight - 20;
+      }
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+      tooltip.style.display = "block";
+
+      // Add event listener to submit button
+      const submitBtn = tooltip.querySelector("#inspector-submit-btn");
+      const textarea = tooltip.querySelector("#inspector-edit-text");
+
+      submitBtn.addEventListener("click", () => {
+        if (currentElement) {
+          currentElement.textContent = textarea.value;
+          console.log("Element updated:", currentElement);
+        }
+      });
+    }
+
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  });
+</script>

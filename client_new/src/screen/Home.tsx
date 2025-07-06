@@ -8,6 +8,7 @@ import HTMLPreviewPanal from "../components/HTMLPreviewPanal";
 const Home = () => {
   const [genratedWebsite, setGenratedWebsite] = useState("");
   const [websiteGenrating, setWebsiteGEnrating] = useState(false);
+  const [siteId, setSiteId] = useState("");
 
   interface FormValues {
     orgName: string;
@@ -21,7 +22,6 @@ const Home = () => {
     setWebsiteGEnrating(true);
 
     try {
-      console.log("called");
       const response = await fetch(
         "http://localhost:3001/genrate_site_ai_gemini",
         {
@@ -40,7 +40,7 @@ const Home = () => {
       const responseData = await response.json();
 
       if (responseData) {
-        console.log(responseData);
+        setSiteId(responseData._id);
         setGenratedWebsite(responseData.data);
       } else {
         alert("No data returned from the server.");
@@ -209,9 +209,15 @@ const Home = () => {
             >
               Submit
             </button>
+            {siteId && (
+              <a href={`http://localhost:3001/sites/${siteId}`} target="_blank">
+                Open IN New Tab
+              </a>
+            )}{" "}
           </div>
         </form>
       </div>
+
       <HTMLPreviewPanal
         content={genratedWebsite}
         loading={websiteGenrating}
